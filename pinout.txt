@@ -1,0 +1,16 @@
+/*
+
+color    rpi      function    epd
+black    pin 6    GND         pin 20
+brown    pin 1    3.3V        pin 1
+red      pin 3    SDA         pin 7
+orange   pin 5    SCL         pin 15
+yellow   pin 11   bcm17/CS    pin 19
+green    pin 13   bcm27/DC    pin 9
+blue     pin 15   bcm22/reset pin 10
+violet   pin 16   bcm23/busy  pin 8
+gray     pin 18   bcm24/pnlon pin 11
+white    pin 22   bcm25/css   pin 2
+black    pin 39   GND         NC
+
+*/
