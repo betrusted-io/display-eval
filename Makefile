@@ -1,10 +1,10 @@
 CC=gcc
 CFLAGS= -lpng
 
-OUTPUTNAME=epd-test
+OUTPUTNAME=memlcd-test
 
 # add all source files here but with '.o' instead of '.c'
-OBJS=epd-test.c readpng.o
+OBJS=memlcd-test.c readpng.o
 
 default: all
 

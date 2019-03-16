@@ -21,6 +21,7 @@
 #include <png.h>
 
 #include <stdint.h>
+#include "memlcd-test.h"
 
 int width, height;
 png_byte color_type;
@@ -47,6 +48,8 @@ void read_png_file(char *filename) {
   color_type = png_get_color_type(png, info);
   bit_depth  = png_get_bit_depth(png, info);
 
+  printf( "png: w: %d, h: %d, color_type: %d, bit_depth: %d\n", width, height, color_type, bit_depth );
+  
   // Read any color_type into 8bit depth, RGBA format.
   // See http://www.libpng.org/pub/png/libpng-manual.txt
 
@@ -129,60 +132,26 @@ void write_png_file(char *filename) {
   fclose(fp);
 }
 
-extern uint8_t blackBuffer[];
-extern uint8_t redBuffer[];
+static int dbglimit = 0;
 
 void process_black_plane() {
   unsigned char bmp = 0;
   unsigned char pixcnt = 0;
   int black = 0;
   
-  //  printf( "width: %d, height: %d\n", width, height );
+  printf( "width: %d, height: %d\n", width, height );
   for(int y = 0; y < height; y++) {
     png_bytep row = row_pointers[y];
     for(int x = 0, pixcnt = 0, bmp = 0; x < width; x++) {
       png_bytep px = &(row[x * 4]);
       // Do something awesome for each pixel here...
-      bmp <<= 1;
-      if( px[0] == 0 && px[1] == 0 && px[2] == 0 ) {
-	// black pixel
-	bmp |= 1;
-      }
-      pixcnt++;
-      if( pixcnt == 8 ) {
-	pixcnt = 0;
-	blackBuffer[black] = bmp;
-	black++;
-	bmp = 0;
+      //printf( "px: %d %d %d\n", px[0], px[1], px[2] );
+      if( px[0] > 128 ) {  // just check one channel for now, should be b&w
+	blackBuffer[x][y] = 1;
+      } else {
+	blackBuffer[x][y] = 0;
       }
     }
   }
 }
 
-void process_red_plane() {
-  unsigned char bmp = 0;
-  unsigned char pixcnt = 0;
-
-  int red = 0;
-  
-  for(int y = 0; y < height; y++) {
-    png_bytep row = row_pointers[y];
-    for(int x = 0, pixcnt = 0, bmp = 0; x < width; x++) {
-      png_bytep px = &(row[x * 4]);
-      // Do something awesome for each pixel here...
-      bmp <<= 1;
-      if( px[0] == 255 && px[1] == 0 && px[2] == 0 ) {
-	// red pixel
-	bmp |= 1;
-      }
-      pixcnt++;
-      if( pixcnt == 8 ) {
-	pixcnt = 0;
-	redBuffer[red] = bmp;
-	red++;
-	bmp = 0;
-      }
-      // printf("%4d, %4d = RGBA(%3d, %3d, %3d, %3d)\n", x, y, px[0], px[1], px[2], px[3]);
-    }
-  }
-}
